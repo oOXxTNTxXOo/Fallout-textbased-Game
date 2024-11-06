@@ -1,14 +1,12 @@
-# character_selection.py
 import random
 
 # Import GAME_START_YEAR from lore_start.py
 from lore_start import GAME_START_YEAR
 
 class Player:
-    def __init__(self, name, age, birth_year, player_class, gender, body_type, height, weight, background, family, special_stats):
+    def __init__(self, name, age, player_class, gender, body_type, height, weight, background, family, special_stats):
         self.name = name
         self.age = age
-        self.birth_year = birth_year
         self.player_class = player_class
         self.gender = gender
         self.body_type = body_type
@@ -71,11 +69,6 @@ def select_age():
         except ValueError:
             pass
         print("Invalid input. Please enter an age between 1 and 212 years.")
-
-def calculate_birth_year(age):
-    current_year = GAME_START_YEAR
-    birth_year = current_year - age
-    return birth_year
 
 def reallocate_points(special_stats, total_points):
     while True:
@@ -179,7 +172,6 @@ def create_character():
     print("Welcome to Wasteland Wanderer Character Creation!")
     name = input("Enter your character's name: ").strip()
     age = select_age()
-    birth_year = calculate_birth_year(age)
     player_class = select_class()
     gender = select_gender()
     body_type = select_body_type()
@@ -187,7 +179,7 @@ def create_character():
     special_stats = assign_special_stats()
     weight, background, family = generate_random_details()
     
-    player = Player(name, age, birth_year, player_class, gender, body_type, height, weight, background, family, special_stats)
+    player = Player(name, age, player_class, gender, body_type, height, weight, background, family, special_stats)
     
     return player
 
@@ -195,7 +187,6 @@ def display_character_sheet(player):
     print("\nCharacter Created!")
     print(f"Name: {player.name}")
     print(f"Age: {player.age}")
-    print(f"Birth Year: {player.birth_year}")
     print(f"Class: {player.player_class}")
     print(f"Gender: {player.gender}")
     print(f"Body Type: {player.body_type}")
@@ -213,4 +204,4 @@ if __name__ == "__main__":
     print("\nDo you want to reallocate your S.P.E.C.I.A.L points? (yes/no)")
     if input("> ").strip().lower() == "yes":
         reallocate_points(player.special_stats, 0)
-        display_character_sheet(player)
+        display_character_sheet
