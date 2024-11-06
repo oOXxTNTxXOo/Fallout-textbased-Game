@@ -19,21 +19,21 @@ In Wasteland Wanderer, you’ll navigate through a ruined world filled with dang
 ## Starting the Game
 Begin by creating your character, choosing from a variety of backgrounds and skills.
 
-## Explore the wasteland, gather resources, and interact with other survivors.
+Explore the wasteland, gather resources, and interact with other survivors.
 
 ## Making Choices
 Use text commands to navigate and make decisions.
 
-## Each choice will have consequences, affecting the storyline and your character’s progress.
+Each choice will have consequences, affecting the storyline and your character’s progress.
 
 ## Features
-### Rich Narrative: Engage in a deep, immersive story with multiple branching paths.
+Rich Narrative: Engage in a deep, immersive story with multiple branching paths.
 
-### Character Development: Customize your character's skills and attributes.
+Character Development: Customize your character's skills and attributes.
 
-### Survival Mechanics: Manage your resources, health, and inventory to survive the harsh wasteland.
+Survival Mechanics: Manage your resources, health, and inventory to survive the harsh wasteland.
 
-### Dynamic Environment: Discover hidden areas, secrets, and lore as you explore.
+Dynamic Environment: Discover hidden areas, secrets, and lore as you explore.
 
 ## Commands
 Here are some basic commands to get you started:
