@@ -175,38 +175,38 @@ def display_random_stats(special_stats):
     for stat, value in special_stats.items():
         print(f"{stat}: {value}")
 
+# Import CharacterInventory from Ch_inventory
+from Ch_inventory import CharacterInventory
+
 def create_character():
     try:
         print("Welcome to Wasteland Wanderer Character Creation!")
         while True:
-            try:
-                name_input = input("Enter your character's name in the format (F: name, M: name, L: name, N: name): ").strip()
-                if name_input:
-                    name_parts = name_input.split(", ")
-                    first_name, middle_name, last_name, nickname = "", "", "", ""
-                    
-                    valid_format = True
-                    for part in name_parts:
-                        if part.startswith("F: "):
-                            first_name = part[3:].strip()
-                        elif part.startswith("M: "):
-                            middle_name = part[3:].strip()
-                        elif part.startswith("L: "):
-                            last_name = part[3:].strip()
-                        elif part.startswith("N: "):
-                            nickname = part[3:].strip()
-                        else:
-                            valid_format = False
-                            print("Invalid input. Please use the format (F: name, M: name, L: name, N: name).")
-                            break
-                    
-                    if valid_format and any([first_name, middle_name, last_name, nickname]):
+            name_input = input("Enter your character's name in the format (F: name, M: name, L: name, N: name): ").strip()
+            if name_input:
+                name_parts = name_input.split(", ")
+                first_name, middle_name, last_name, nickname = "", "", "", ""
+                
+                valid_format = True
+                for part in name_parts:
+                    if part.startswith("F: "):
+                        first_name = part[3:].strip()
+                    elif part.startswith("M: "):
+                        middle_name = part[3:].strip()
+                    elif part.startswith("L: "):
+                        last_name = part[3:].strip()
+                    elif part.startswith("N: "):
+                        nickname = part[3:].strip()
+                    else:
+                        valid_format = False
+                        print("Invalid input. Please use the format (F: name, M: name, L: name, N: name).")
                         break
-                    print("Please provide at least one valid name.")
-                else:
-                    print("Name input cannot be empty. Please enter a valid name.")
-            except Exception as e:
-                print(f"An error occurred: {e}")
+                    
+                if valid_format and any([first_name, middle_name, last_name, nickname]):
+                    break
+                print("Please provide at least one valid name.")
+            else:
+                print("Name input cannot be empty. Please enter a valid name.")
         
         age = select_age()
         player_class = select_class()
@@ -217,7 +217,7 @@ def create_character():
         weight, background, family = generate_random_details(gender, age, player_class, body_type, height, special_stats)
 
         player = Player(f"{first_name} {middle_name} {last_name} ({nickname})".strip(), age, player_class, gender, body_type, height, weight, background, family, special_stats)
-
+        player.inventory = CharacterInventory()  # Automatically add inventory
         return player
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -383,7 +383,49 @@ def generate_random_details(gender, age, player_class, body_type, height, specia
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def display_character_sheet(player):
+def random_name():
+    first_names = ["Alex", "Jordan", "Taylor", "Morgan", "Riley"]
+    middle_names = ["Lee", "James", "Morgan", "Drew", "Blake"]
+    last_names = ["Smith", "Johnson", "Williams", "Jones", "Brown"]
+    nicknames = ["Red", "Ace", "Shadow", "Scout", "Doc"]
+    
+    first = random.choice(first_names)
+    middle = random.choice(middle_names)
+    last = random.choice(last_names)
+    nickname = random.choice(nicknames)
+    
+    return f"{first} {middle} {last} ({nickname})"
+
+def random_special_stats():
+    stats = ["Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"]
+    special_stats = {stat: 1 for stat in stats}  # Initialize all stats to 1
+    total_points = 21  # Total points available to distribute
+    
+    while total_points > 0:
+        stat = random.choice(stats)
+        if special_stats[stat] < 20:  # Cap each stat at 20
+            points = random.randint(1, min(10, total_points))
+            if special_stats[stat] + points <= 20:
+                special_stats[stat] += points
+                total_points -= points
+                
+    return special_stats
+
+def generate_random_character():
+    name = random_name()
+    age = random.randint(18, 60)
+    player_class = random.choice(["Vault Dweller", "Wasteland Survivor", "Raider", "Ghoul", "Robot", "Mutant"])
+    gender = random.choice(["Male", "Female", "Non-binary"])
+    body_type = random.choice(["Lean", "Average", "Athletic", "Bulky"])
+    height = random.uniform(5, 7)  # Random height between 5 and 7 feet
+    special_stats = random_special_stats()
+    weight, background, family = generate_random_details(gender, age, player_class, body_type, height, special_stats)
+
+    player = Player(name, age, player_class, gender, body_type, height, weight, background, family, special_stats)
+    player.inventory = CharacterInventory()  # Automatically add inventory
+    return player
+
+def display_character_sheet(player, show_inventory=False):
     try:
         print("\nCharacter Created!")
         name_display = " ".join(filter(None, [player.name.split("(")[0], "(" + player.name.split("(")[1] if "(" in player.name and player.name.split("(")[1].strip(")") else None]))
@@ -399,6 +441,9 @@ def display_character_sheet(player):
         print("S.P.E.C.I.A.L Stats:")
         for stat, value in player.special_stats.items():
             print(f"{stat}: {value}")
+        if show_inventory:
+            print("\nInventory:")
+            player.inventory.view_inventory()
     except Exception as e:
         print(f"An error occurred: {e}")
 
