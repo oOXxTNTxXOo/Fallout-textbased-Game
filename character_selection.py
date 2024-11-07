@@ -92,6 +92,7 @@ def reallocate_points(special_stats, total_points):
                             special_stats[stat_choice.capitalize()] -= points
                             total_points += points
                             break
+                        print("Invalid input. Please enter a value within the available points.")
                     except ValueError:
                         print("Invalid input. Please enter a numeric value.")
             else:
@@ -107,40 +108,63 @@ def reallocate_points(special_stats, total_points):
                     try:
                         print(f"Allocate points to {stat_choice.capitalize()}: ")
                         points = int(input("> "))
-                        if 0 <= points <= total_points:
+                        if 0 <= points <= total_points and special_stats[stat_choice.capitalize()] + points <= 20:
                             special_stats[stat_choice.capitalize()] += points
                             total_points -= points
                             break
+                        print("Invalid input. Please enter a value within the available points and ensure the total does not exceed 20 for any stat.")
                     except ValueError:
                         print("Invalid input. Please enter a numeric value.")
             else:
                 print(f"Invalid input. Available points: {special_stats[stat_choice.capitalize()]}")
+
+        # Additional prompt to move points from one stat to another
+        while input("Do you want to move points from one stat to another? (yes/no) > ").strip().lower() == 'yes':
+            print("Move points from one stat to another.")
+            from_stat = input("Choose a stat to move points from: ").strip().lower()
+            to_stat = input("Choose a stat to move points to: ").strip().lower()
+            if from_stat.capitalize() in special_stats and to_stat.capitalize() in special_stats:
+                while True:
+                    try:
+                        points = int(input(f"How many points do you want to move from {from_stat.capitalize()} to {to_stat.capitalize()}? > "))
+                        if 1 <= special_stats[from_stat.capitalize()] - points and special_stats[to_stat.capitalize()] + points <= 20:
+                            special_stats[from_stat.capitalize()] -= points
+                            special_stats[to_stat.capitalize()] += points
+                            break
+                        print("Invalid input. Ensure no stat goes below 1 and no stat exceeds 20.")
+                    except ValueError:
+                        print("Invalid input. Please enter a numeric value.")
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
+            else:
+                print("Invalid stat choices. Please enter valid stat names.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
 def assign_special_stats():
     try:
-        print("Assign your S.P.E.C.I.A.L stats (each stat starts at 1, total additional points: 21):")
+        print("Assign your S.P.E.C.I.A.L stats (each stat starts at 1, total additional points: 21, max points per stat: 20):")
         stats = ["Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"]
         special_stats = {stat: 1 for stat in stats}  # Initialize all stats to 1
         total_points = 21  # Total points available to distribute
 
-        while True:
-            choice = input("Do you want to allocate points manually or randomly? (Enter 'manual' or 'random') > ").strip().lower()
-            if choice in ['manual', 'random']:
-                break
-            print("Invalid input. Please enter 'manual' or 'random'.")
+        for stat in stats:
+            while True:
+                try:
+                    print(f"Assign points to {stat} (remaining points: {total_points}):")
+                    points = int(input("> ").strip().lower())
+                    if 0 <= points <= total_points and special_stats[stat] + points <= 20:
+                        special_stats[stat] += points
+                        total_points -= points
+                        break
+                    print("Invalid input. Please enter a value within the available points and ensure the total does not exceed 20 for any stat.")
+                except ValueError:
+                    print("Invalid input. Please enter a numeric value.")
+                except Exception as e:
+                    print(f"An error occurred: {e}")
 
-        if choice == 'random':
-            while total_points > 0:
-                stat = random.choice(stats)
-                points = random.randint(1, min(10, total_points))
-                special_stats[stat] += points
-                total_points -= points
-            display_random_stats(special_stats)
-        
         if input("Do you want to reallocate your S.P.E.C.I.A.L points? (yes/no) > ").strip().lower() == 'yes':
-            reallocate_points(special_stats, 0)
+            reallocate_points(special_stats, total_points)
 
         return special_stats
     except Exception as e:
@@ -149,9 +173,56 @@ def assign_special_stats():
 def display_random_stats(special_stats):
     print("Randomly assigned S.P.E.C.I.A.L stats:")
     for stat, value in special_stats.items():
-        print(f"{stat}: {value} (Base: 1)")
+        print(f"{stat}: {value}")
 
-def generate_random_details(gender, age, player_class, body_type, special_stats):
+def create_character():
+    try:
+        print("Welcome to Wasteland Wanderer Character Creation!")
+        while True:
+            try:
+                name_input = input("Enter your character's name in the format (F: name, M: name, L: name, N: name): ").strip()
+                if name_input:
+                    name_parts = name_input.split(", ")
+                    first_name, middle_name, last_name, nickname = "", "", "", ""
+                    
+                    valid_format = True
+                    for part in name_parts:
+                        if part.startswith("F: "):
+                            first_name = part[3:].strip()
+                        elif part.startswith("M: "):
+                            middle_name = part[3:].strip()
+                        elif part.startswith("L: "):
+                            last_name = part[3:].strip()
+                        elif part.startswith("N: "):
+                            nickname = part[3:].strip()
+                        else:
+                            valid_format = False
+                            print("Invalid input. Please use the format (F: name, M: name, L: name, N: name).")
+                            break
+                    
+                    if valid_format and any([first_name, middle_name, last_name, nickname]):
+                        break
+                    print("Please provide at least one valid name.")
+                else:
+                    print("Name input cannot be empty. Please enter a valid name.")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        
+        age = select_age()
+        player_class = select_class()
+        gender = select_gender()
+        body_type = select_body_type()
+        height = select_height()
+        special_stats = assign_special_stats()
+        weight, background, family = generate_random_details(gender, age, player_class, body_type, height, special_stats)
+
+        player = Player(f"{first_name} {middle_name} {last_name} ({nickname})".strip(), age, player_class, gender, body_type, height, weight, background, family, special_stats)
+
+        return player
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+def generate_random_details(gender, age, player_class, body_type, height, special_stats):
     try:
         weight = random.randint(90, 300)  # Weight in pounds
 
@@ -283,6 +354,28 @@ def generate_random_details(gender, age, player_class, body_type, special_stats)
             backgrounds[gender].append("Renowned for their incredible strength, a protector of the weak.")
             families[gender].append("Living with other strong individuals, forming a protective group.")
 
+        # Adding height-related backgrounds
+        if height > 6:
+            backgrounds[gender].append("A towering figure, often intimidating to others.")
+            families[gender].append("Part of a group known for their exceptional height.")
+
+        # Class-specific backgrounds and families
+        if player_class == "Vault Dweller":
+            backgrounds[gender].append("Raised in the safety of a Vault, now exploring the outside world.")
+            families[gender].append("A Vault family, protected from the horrors of the wasteland.")
+        elif player_class == "Wasteland Survivor":
+            backgrounds[gender].append("Grew up in the harsh wasteland, learning to survive.")
+            families[gender].append("A hardy family, adapted to the wasteland's challenges.")
+        elif player_class == "Raider":
+            backgrounds[gender].append("Spent years as a Raider, taking what they needed.")
+            families[gender].append("A group of Raiders, bound by loyalty and survival.")
+        elif player_class == "Robot":
+            backgrounds[gender].append("An advanced robot, designed for complex tasks.")
+            families[gender].append("A network of robots, communicating and collaborating.")
+        elif player_class == "Mutant":
+            backgrounds[gender].append("A mutant with unique abilities, shunned by many.")
+            families[gender].append("A group of mutants, living on the fringes of society.")
+
         background = random.choice(backgrounds[gender])
         family = random.choice(families[gender])
 
@@ -290,66 +383,11 @@ def generate_random_details(gender, age, player_class, body_type, special_stats)
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
-def create_character():
-    try:
-        print("Welcome to Wasteland Wanderer Character Creation!")
-        while True:
-            first_name = input("Enter your character's first name: ").strip()
-            if first_name:
-                break
-            print("First name cannot be empty. Please enter a valid name.")
-        
-        middle_name = input("Enter your character's middle name (optional): ").strip()
-        last_name = input("Enter your character's last name (optional): ").strip()
-        nickname = input("Enter your character's nickname (optional): ").strip()
-        full_name = f"{first_name} {middle_name} {last_name} ({nickname})".strip()
-
-        age = select_age()
-        player_class = select_class()
-        gender = select_gender()
-        body_type = select_body_type()
-        height = select_height()
-        special_stats = assign_special_stats()
-        weight, background, family = generate_random_details(gender, age, player_class, body_type, special_stats)
-
-        player = Player(full_name, age, player_class, gender, body_type, height, weight, background, family, special_stats)
-
-        return player
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-    try:
-        print("Welcome to Wasteland Wanderer Character Creation!")
-        while True:
-            first_name = input("Enter your character's first name: ").strip()
-            if first_name:
-                break
-            print("First name cannot be empty. Please enter a valid name.")
-        
-        middle_name = input("Enter your character's middle name (optional): ").strip()
-        last_name = input("Enter your character's last name (optional): ").strip()
-        nickname = input("Enter your character's nickname (optional): ").strip()
-        full_name = f"{first_name} {middle_name} {last_name} ({nickname})".strip()
-
-        age = select_age()
-        player_class = select_class()
-        gender = select_gender()
-        body_type = select_body_type()
-        height = select_height()
-        special_stats = assign_special_stats()
-        weight, background, family = generate_random_details(gender, age, player_class, body_type, special_stats)
-
-        player = Player(full_name, age, player_class, gender, body_type, height, weight, background, family, special_stats)
-
-        return player
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
 def display_character_sheet(player):
     try:
         print("\nCharacter Created!")
-        print(f"Name: {player.name}")
+        name_display = " ".join(filter(None, [player.name.split("(")[0], "(" + player.name.split("(")[1] if "(" in player.name and player.name.split("(")[1].strip(")") else None]))
+        print(f"Name: {name_display.strip()}")
         print(f"Age: {player.age}")
         print(f"Class: {player.player_class}")
         print(f"Gender: {player.gender}")
@@ -360,7 +398,7 @@ def display_character_sheet(player):
         print(f"Family: {player.family}")
         print("S.P.E.C.I.A.L Stats:")
         for stat, value in player.special_stats.items():
-            print(f"{stat}: {value} (Base: 1)")
+            print(f"{stat}: {value}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -368,35 +406,30 @@ if __name__ == "__main__":
     player = create_character()
     display_character_sheet(player)
     try:
-        if input("\nDo you want to reallocate your S.P.E.C.I.A.L points? (yes/no) > ").strip().lower() == "yes":
-            reallocate_points(player.special_stats, 0)
-            display_character_sheet(player)
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        while True:
+            print("\nWhat would you like to do next?")
+            print("1. Reallocate S.P.E.C.I.A.L points")
+            print("2. Change name")
+            print("3. See stats")
+            print("4. View background and family")
+            print("5. Exit")
+            choice = input("> ").strip().lower()
 
-    try:
-        print("\nCharacter Created!")
-        print(f"Name: {player.name}")
-        print(f"Age: {player.age}")
-        print(f"Class: {player.player_class}")
-        print(f"Gender: {player.gender}")
-        print(f"Body Type: {player.body_type}")
-        print(f"Height: {player.height:.2f} feet")
-        print(f"Weight: {player.weight} lbs")
-        print(f"Background: {player.background}")
-        print(f"Family: {player.family}")
-        print("S.P.E.C.I.A.L Stats:")
-        for stat, value in player.special_stats.items():
-            print(f"{stat}: {value} (Base: 1)")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-if __name__ == "__main__":
-    player = create_character()
-    display_character_sheet(player)
-    try:
-        if input("\nDo you want to reallocate your S.P.E.C.I.A.L points? (yes/no) > ").strip().lower() == "yes":
-            reallocate_points(player.special_stats, 0)
-            display_character_sheet(player)
+            if choice == "1":
+                reallocate_points(player.special_stats, 0)
+                display_character_sheet(player)
+            elif choice == "2":
+                player = create_character()
+                display_character_sheet(player)
+            elif choice == "3":
+                display_character_sheet(player)
+            elif choice == "4":
+                print(f"Background: {player.background}")
+                print(f"Family: {player.family}")
+            elif choice == "5" or choice == "exit":
+                print("Exiting character creation. Goodbye!")
+                break
+            else:
+                print("Invalid input. Please select a valid option.")
     except Exception as e:
         print(f"An error occurred: {e}")
