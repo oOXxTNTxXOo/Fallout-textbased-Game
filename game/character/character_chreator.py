@@ -63,7 +63,7 @@ def create_character():
                         valid_format = False
                         print("Invalid input. Please use the format (F: name, M: name, L: name, N: name).")
                         break
-                    
+                
                 if valid_format and any([first_name, middle_name, last_name, nickname]):
                     break
                 print("Please provide at least one valid name.")
@@ -71,25 +71,29 @@ def create_character():
                 print("Name input cannot be empty. Please enter a valid name.")
         
         age = select_age()
-        player_class = select_class()
+        race = select_race()
         gender = select_gender()
         body_type = select_body_type()
         height = select_height()
+        weight = select_weight()
         special_stats = assign_special_stats()
-        weight, background, family = generate_random_details(gender, age, player_class, body_type, height, special_stats)
+        background = generate_random_details(gender, age, race, body_type, height, weight, special_stats)
+        health = calculate_health()
+        lvl = 1
+        family = FM()
 
-        player = Character(f"{first_name} {middle_name} {last_name} ({nickname})".strip(), age, player_class, gender, body_type, height, weight, background, family, special_stats, health=None, lvl=1)
+        player = Character(f"{first_name} {middle_name} {last_name} ({nickname})".strip(), age, race, gender, body_type, height, weight, background, family, special_stats, health, lvl)
         player.inventory = CharacterInventory()  # Automatically add inventory
         return player
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def select_class():
-    classes = ["Vault Dweller", "Wasteland Survivor", "Raider", "Ghoul", "Robot", "Mutant"]
-    return select_option(classes, "Choose your class:")
+def select_race():
+    races = ["Vault Dweller", "Wasteland Survivor", "Raider", "Ghoul", "Robot", "Mutant"]
+    return select_option(races, "Choose your race:")
 
 def select_gender():
-    genders = ["Male", "Female", "Non-binary"]
+    genders = ["Male", "Female"]
     return select_option(genders, "Choose your gender:")
 
 def select_body_type():
@@ -133,7 +137,42 @@ def generate_random_details():
 
 def assign_special_stats():
     try:
-        # Placeholder for actual implementation
-        # Add your code here
+        print("Assign your S.P.E.C.I.A.L stats (each stat starts at 1, total additional points: 21, max points per stat: 20):")
+        stats = ["Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"]
+        special_stats = {stat: 1 for stat in stats}  # Initialize all stats to 1
+        total_points = 21  # Total points available to distribute
+
+        for stat in stats:
+            while True:
+                try:
+                    print(f"Assign points to {stat} (remaining points: {total_points}):")
+                    points = int(input("> ").strip().lower())
+                    if 0 <= points <= total_points and special_stats[stat] + points <= 20:
+                        special_stats[stat] += points
+                        total_points -= points
+                        break
+                    print("Invalid input. Please enter a value within the available points and ensure the total does not exceed 20 for any stat.")
+                except ValueError:
+                    print("Invalid input. Please enter a numeric value.")
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+
+    
     except Exception as e:
         print(f"An error occurred: {e}")
+
+def calculate_health():
+    # Placeholder for actual implementation
+    # Add your code here
+    return HP
+
+def select_weight():
+    # Placeholder for actual implementation
+    # Add your code here
+    return weight
+
+def FM():
+    # Placeholder for actual implementation
+    return Family
+
+
