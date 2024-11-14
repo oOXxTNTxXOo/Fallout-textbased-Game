@@ -1,36 +1,9 @@
 print("Welcome to Wasteland Wanderer Character Creation!")
-"""while True:
-    name_input = input("Enter your character's name in the format (F: name, M: name, L: name, N: name): ").strip()
-    if name_input:
-        name_parts = name_input.split(", ")
-        print(name_input.split(", "))
-        first_name, middle_name, last_name, nickname = "", "", "", ""
-        
-        valid_format = True
-        for part in name_parts:
-            if part.startswith("F: "):
-                first_name = part[3:].strip()
-            elif part.startswith("M: "):
-                middle_name = part[3:].strip()
-            elif part.startswith("L: "):
-                last_name = part[3:].strip()
-            elif part.startswith("N: "):
-                nickname = part[3:].strip()
-            else:
-                valid_format = False
-                print("Invalid input. Please use the format (F: name, M: name, L: name, N: name).")
-                break
-            
-        if valid_format and any([first_name, middle_name, last_name, nickname]):
-            break
-        print("Please provide at least one valid name.")
-    else:
-        print("Name input cannot be empty. Please enter a valid name.")"""
-
 
 def assign_special_stats():
     while True:
         print("Assign your S.P.E.C.I.A.L stats (each stat starts at 1, total additional points: 21, max points per stat: 20):")
+        New_points = 0
         total_points = 21  # Total points available to distribute
         stat_inputs = input(f"distribute your {total_points} stats, please use the format (S: stat, P: stat, E: stat, C: stat, I: stat, A: stat, L: stat):\n")
         stats = [["Strength", 1], ["Perception", 1], ["Endurance", 1], ["Charisma", 1], ["Intelligence", 1], ["Agility", 1], ["Luck", 1]]
@@ -44,6 +17,11 @@ def assign_special_stats():
                     try:
                         Strength_stat = st[3:].strip()
                         stats[0][1] = int(stats[0][1]) + int(st[3:].strip())
+                        if 0 < int(stats[0][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -51,6 +29,11 @@ def assign_special_stats():
                     try:
                         Perception_stat = st[3:].strip()
                         stats[1][1] = int(stats[1][1]) + int(st[3:].strip())
+                        if 0 < int(stats[1][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -58,6 +41,11 @@ def assign_special_stats():
                     try:
                         Endurance_stat = st[3:].strip()
                         stats[2][1] = int(stats[2][1]) + int(st[3:].strip())
+                        if 0 < int(stats[2][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -65,6 +53,11 @@ def assign_special_stats():
                     try:
                         Charisma_stat = st[3:].strip()
                         stats[3][1] = int(stats[3][1]) + int(st[3:].strip())
+                        if 0 < int(stats[3][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -72,6 +65,11 @@ def assign_special_stats():
                     try:
                         Intelligence_stat = st[3:].strip()
                         stats[4][1] = int(stats[4][1]) + int(st[3:].strip())
+                        if 0 < int(stats[4][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -79,6 +77,11 @@ def assign_special_stats():
                     try:
                         Agility_stat = st[3:].strip()
                         stats[5][1] = int(stats[5][1]) + int(st[3:].strip())
+                        if 0 < int(stats[5][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -86,6 +89,11 @@ def assign_special_stats():
                     try:
                         Luck_stat = st[3:].strip()
                         stats[6][1] = int(stats[6][1]) + int(st[3:].strip())
+                        if 0 < int(stats[6][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
                     except ValueError:
                         valid_format = False
                         break
@@ -96,12 +104,13 @@ def assign_special_stats():
             if valid_format and any([Strength_stat, Perception_stat, Endurance_stat, Charisma_stat, Intelligence_stat, Agility_stat, Luck_stat]):
                 Va = True
                 if int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat) < int(total_points):
+                    New_points = int(New_points) + (int(total_points) - (int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat)))
                     while True:
-                        YorN = input(f"you still have points to spend {total_points}, would you like to spend them? Y/N:\n")
+                        print(stats)
+                        YorN = input(f"you still have {New_points} points to spend, would you like to spend them? Y/N:\n").upper()
                         if YorN == "Y":
                             break
                         elif YorN == "N":
-                            #New_points = int(New_points) + int(total_points)
                             Va = False
                             break
                         else:
@@ -111,12 +120,11 @@ def assign_special_stats():
                 elif int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat) > int(total_points):
                     print("too many points distributed. try again")
                 else: 
+                    print(stats)
                     break
             print("Please provide at least one valid stat.")
         else:
             print("Stats input cannot be empty. Please distribute your stats.")
-        #fix negatives
-        #Fix over 20 stat points
 
         """ 
         for stat in stats:

@@ -4,7 +4,7 @@ import random
 from inventory import CharacterInventory
 
 class Character:
-    def __init__(self, name, age, race, gender, birthday, body_type, height, weight, background, family, special_stats, new_points, health, lvl):
+    def __init__(self, name, age, race, gender, birthday, body_type, height, weight, background, family, special_stats, new_points,total_points, health, lvl):
         self.name = name
         self.age = age
         self.race = race
@@ -17,6 +17,7 @@ class Character:
         self.family = family
         self.special_stats = special_stats
         self.new_points = new_points
+        self.total_points = total_points
         self.health = health
         self.lvl = lvl
 
