@@ -99,7 +99,7 @@ def select_gender():
     return select_option(genders, "Choose your gender:")
 
 def select_body_type():
-    body_types = ["Lean", "Average", "Athletic", "Bulky"]
+    body_types = ["Emaciated", "Bony", "Lean", "Fit", "Athletic", "Average", "Stocky", "Bulky", "Chubby", "Fat"]
     return select_option(body_types, "Choose your body type:")
 
 def select_height():
@@ -138,39 +138,175 @@ def generate_random_details():
         print(f"An error occurred: {e}")
 
 def assign_special_stats():
-    try:
+    while True:
         print("Assign your S.P.E.C.I.A.L stats (each stat starts at 1, total additional points: 21, max points per stat: 20):")
-        stats = ["Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"]
-        special_stats = {stat: 1 for stat in stats}  # Initialize all stats to 1
+        New_points = 0
         total_points = 21  # Total points available to distribute
+        stat_inputs = input(f"distribute your {total_points} stats, please use the format (S: stat, P: stat, E: stat, C: stat, I: stat, A: stat, L: stat):\n")
+        stats = [["Strength", 1], ["Perception", 1], ["Endurance", 1], ["Charisma", 1], ["Intelligence", 1], ["Agility", 1], ["Luck", 1]]
+        Strength_stat, Perception_stat, Endurance_stat, Charisma_stat, Intelligence_stat, Agility_stat, Luck_stat = "0", "0", "0", "0", "0", "0", "0"
+        if stat_inputs:
+            stat_parts = stat_inputs.split(", ")
+            valid_format = True
 
-        for stat in stats:
-            while True:
-                try:
-                    print(f"Assign points to {stat} (remaining points: {total_points}):")
-                    points = int(input("> ").strip().lower())
-                    if 0 <= points <= total_points and special_stats[stat] + points <= 20:
-                        special_stats[stat] += points
-                        total_points -= points
+            for st in stat_parts:
+                if st.startswith("S: "):
+                    try:
+                        Strength_stat = st[3:].strip()
+                        stats[0][1] = int(stats[0][1]) + int(st[3:].strip())
+                        if 0 < int(stats[0][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
                         break
-                    print("Invalid input. Please enter a value within the available points and ensure the total does not exceed 20 for any stat.")
-                except ValueError:
-                    print("Invalid input. Please enter a numeric value.")
-                except Exception as e:
-                    print(f"An error occurred: {e}")
+                elif st.startswith("P: "):
+                    try:
+                        Perception_stat = st[3:].strip()
+                        stats[1][1] = int(stats[1][1]) + int(st[3:].strip())
+                        if 0 < int(stats[1][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                elif st.startswith("E: "):
+                    try:
+                        Endurance_stat = st[3:].strip()
+                        stats[2][1] = int(stats[2][1]) + int(st[3:].strip())
+                        if 0 < int(stats[2][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                elif st.startswith("C: "):
+                    try:
+                        Charisma_stat = st[3:].strip()
+                        stats[3][1] = int(stats[3][1]) + int(st[3:].strip())
+                        if 0 < int(stats[3][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                elif st.startswith("I: "):
+                    try:
+                        Intelligence_stat = st[3:].strip()
+                        stats[4][1] = int(stats[4][1]) + int(st[3:].strip())
+                        if 0 < int(stats[4][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                elif st.startswith("A: "):
+                    try:
+                        Agility_stat = st[3:].strip()
+                        stats[5][1] = int(stats[5][1]) + int(st[3:].strip())
+                        if 0 < int(stats[5][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                elif st.startswith("L: "):
+                    try:
+                        Luck_stat = st[3:].strip()
+                        stats[6][1] = int(stats[6][1]) + int(st[3:].strip())
+                        if 0 < int(stats[6][1]) < 21:
+                            pass
+                        else:    
+                            valid_format = False
+                            break
+                    except ValueError:
+                        valid_format = False
+                        break
+                else:
+                    valid_format = False
+                    print("Invalid input. please use the format (S: stat, P: stat, E: stat, C: stat, I: stat, A: stat, L: stat).")
+                    break
+            if valid_format and any([Strength_stat, Perception_stat, Endurance_stat, Charisma_stat, Intelligence_stat, Agility_stat, Luck_stat]):
+                Va = True
+                if int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat) < int(total_points):
+                    New_points = int(New_points) + (int(total_points) - (int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat)))
+                    while True:
+                        print(stats)
+                        YorN = input(f"you still have {New_points} points to spend, would you like to spend them? Y/N:\n").upper()
+                        if YorN == "Y":
+                            break
+                        elif YorN == "N":
+                            Va = False
+                            break
+                        else:
+                            print("invalid input use Y/N")
+                    if Va == False:
+                        break
+                elif int(Strength_stat) + int(Perception_stat) + int(Endurance_stat) + int(Charisma_stat) + int(Intelligence_stat) + int(Agility_stat) + int(Luck_stat) > int(total_points):
+                    print("too many points distributed. try again")
+                else: 
+                    print(stats)
+                    break
+            print("Please provide at least one valid stat.")
+        else:
+            print("Stats input cannot be empty. Please distribute your stats.")
 
-    
-    except Exception as e:
-        print(f"An error occurred: {e}")
+def calculate_health(special_stats):
+    base_health = 90
+    endurance_points = special_stats.get("Endurance", 0)
+    strength_points = special_stats.get("Strength", 0)
+    max_health = base_health + (endurance_points * 10)
+    strength_multiplier = 1 + (strength_points / 100)
+    max_health = int(max_health * strength_multiplier)
+    return max_health
 
-def calculate_health():
-    # Placeholder for actual implementation
-    # Add your code here
-    return HP
+def select_weight(race, gender, height, body_type):
+    body_type_weights = {
+        "Emaciated": 100,
+        "Bony": 120,
+        "Lean": 140,
+        "Fit": 160,
+        "Athletic": 180,
+        "Average": 200,
+        "Stocky": 220,
+        "Bulky": 240,
+        "Chubby": 260,
+        "Fat": 280
+    }
 
-def select_weight():
-    # Placeholder for actual implementation
-    # Add your code here
+    race_multipliers = {
+        "Vault Dweller": 1,
+        "Wasteland Survivor": 1,
+        "Raider": 1,
+        "Ghoul": 1.2,
+        "Mutant": 1.75,
+        "Robot": 2
+    }
+
+    gender_multipliers = {
+        "Male": 1,
+        "Female": 0.75
+    }
+
+    base_weight = body_type_weights.get(body_type, 200)
+    race_multiplier = race_multipliers.get(race, 1)
+    gender_multiplier = gender_multipliers.get(gender, 1)
+    height_multiplier = 1 + (height - 3) / 9 * 2.5  # Scales from 1 at 3 feet to 3.5 at 12 feet
+
+    weight = base_weight * race_multiplier * gender_multiplier * height_multiplier
+
     return weight
 
 def FM():
@@ -178,3 +314,4 @@ def FM():
     return Family
 
 
+create_character()
